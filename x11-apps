@@ -10,27 +10,34 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive \
     rm -rf /var/lib/apt/lists/*
 
 CMD ["xlogo"]
+
 ✅ Step-by-Step on Ubuntu Host:
 Create a directory and Dockerfile:
+
 mkdir -p ~/docker/x11-apps
 cd ~/docker/x11-apps
 nano Dockerfile
+
 Paste the Dockerfile contents above and save.
 
 Build the image:
 docker build -t x11-apps .
 Confirm the image is built:
 docker image ls
+
 You should see something like:
 
 REPOSITORY    TAG       IMAGE ID       CREATED          SIZE
 x11-apps      latest    77721f2519a0   16 seconds ago   72.4MB
+
 🧪 To Run It (Graphical Output with X11):
+
 To run GUI apps like xlogo on your Ubuntu host, you need X11 forwarding.
 
 If running directly on Ubuntu desktop:
 
 xhost +local:docker
+
 docker run --rm -e DISPLAY=$DISPLAY \
   -v /tmp/.X11-unix:/tmp/.X11-unix \
   x11-apps
