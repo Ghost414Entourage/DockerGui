@@ -86,3 +86,53 @@ chmod +x ~/docker/x11-apps/xlogoV1.sh
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+sudo apt-get install -y xauth
+
+
+
+nano ~/docker/x11-apps/xlogoSecure.sh
+
+
+
+#!/bin/bash
+
+# Directory to mount X11 socket and .Xauthority
+XSOCK=/tmp/.X11-unix
+XAUTH=/tmp/.docker.xauth
+
+# Create .Xauthority-compatible file if not already created
+if [ ! -f $XAUTH ]; then
+    touch $XAUTH
+    xauth nlist "$DISPLAY" | sed -e 's/^..../ffff/' | xauth -f $XAUTH nmerge -
+    echo "[+] Created temporary X authority file at $XAUTH"
+fi
+
+# Run the Docker container using secure X11 cookie authentication
+docker run --rm \
+    -e DISPLAY=$DISPLAY \
+    -e XAUTHORITY=/root/.Xauthority \
+    -v $XSOCK:$XSOCK:ro \
+    -v $XAUTH:/root/.Xauthority:ro \
+    x11-apps
+
+
+
+
+
+
+chmod +x ~/docker/x11-apps/xlogoSecure.sh
+
+
+~/docker/x11-apps/xlogoSecure.sh
+
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
