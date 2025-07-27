@@ -135,4 +135,39 @@ chmod +x ~/docker/x11-apps/xlogoSecure.sh
 
 
 
+✅ xlogoV2.sh – Secure, Hostname-Agnostic X11 Access
+#!/bin/bash
 
+# Defaults
+XSOCK="/tmp/.X11-unix"
+XAUTH="${XAUTHORITY:-$HOME/.Xauthority}"
+DOCKER_XAUTH="$XAUTH.docker"
+
+# Recreate wildcard .Xauthority each time (due to session regeneration)
+cp --preserve=all "$XAUTH" "$DOCKER_XAUTH" || {
+    echo "[-] Could not copy $XAUTH"
+    exit 1
+}
+xauth nlist "$DISPLAY" | sed -e 's/^..../ffff/' | xauth -f "$DOCKER_XAUTH" nmerge - || {
+    echo "[-] Failed to merge X authority cookie"
+    exit 1
+}
+
+# Run the container using wildcarded authority
+docker run --rm \
+    -e DISPLAY="unix$DISPLAY" \
+    -v "$XSOCK:$XSOCK:ro" \
+    -e XAUTHORITY="$DOCKER_XAUTH" \
+    -v "$DOCKER_XAUTH:$DOCKER_XAUTH:ro" \
+    x11-apps
+🧪 How to Use
+Save this script as xlogoV2.sh.
+Make it executable:
+chmod +x xlogoV2.sh
+Run it:
+./xlogoV2.sh
+🔍 Notes
+sed 's/^..../ffff/' replaces the hostname hash in the cookie with a wildcard (ffff) so the container hostname doesn't matter.
+No need to -h $(hostname) anymore.
+Fully local, no external access is enabled.
+Still works fine with XWayland if $DISPLAY and .Xauthority are valid.
