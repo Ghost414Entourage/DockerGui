@@ -1,0 +1,32 @@
+Install and run Portainer, a web-based Docker container management UI, using Docker itself.
+
+🧱 Abstracted Docker Command:
+docker run -d \
+  -p 9000:9000 \
+  -v /var/run/docker.sock:/var/run/docker.sock \
+  portainer/portainer
+
+✅ Step-by-Step on Ubuntu:
+Ensure Docker is running:
+sudo systemctl start docker
+Run Portainer:
+docker run -d \
+  -p 9000:9000 \
+  -v /var/run/docker.sock:/var/run/docker.sock \
+  portainer/portainer
+-d: detached mode (runs in background)
+-p 9000:9000: expose the UI on host port 9000
+-v /var/run/docker.sock:/var/run/docker.sock: give Portainer access to the Docker daemon
+
+Access the Portainer Web UI:
+Open this in your browser:
+
+http://localhost:9000
+Or use your host's IP address if you're connecting from another machine:
+
+http://<your-host-ip>:9000
+Set up an admin user and password on first access, then choose to manage the local Docker environment.
+🧼 Optional Cleanup Command
+To stop and remove Portainer:
+
+docker rm -f $(docker ps -q --filter ancestor=portainer/portainer)
