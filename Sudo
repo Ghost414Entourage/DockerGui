@@ -1,2 +1,8 @@
 sudo groupadd docker             # (creates the group if it doesn't exist)
 sudo usermod -aG docker <username>  # (adds user to group)
+
+
+
+https://github.com/fadams/docker-gui
+
+
