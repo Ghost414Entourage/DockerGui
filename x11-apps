@@ -53,4 +53,36 @@ xhost +si:localuser:root
 
 
 
+
+nano ~/docker/x11-apps/xlogoV1.sh
+
+
+#!/bin/bash
+
+# Allow local (non-network) connections to the X server
+xhost +local:
+
+# Run the Docker container with access to the host X11 socket
+docker run --rm \
+    -e DISPLAY=unix$DISPLAY \
+    -v /tmp/.X11-unix:/tmp/.X11-unix:ro \
+    x11-apps
+
+# Revoke local access permissions to the X server
+xhost -local:
+
+
+
+chmod +x ~/docker/x11-apps/xlogoV1.sh
+
+
+
+~/docker/x11-apps/xlogoV1.sh
+
+
+
+
+
+
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
