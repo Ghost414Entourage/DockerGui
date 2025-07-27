@@ -160,12 +160,16 @@ docker run --rm \
     -e XAUTHORITY="$DOCKER_XAUTH" \
     -v "$DOCKER_XAUTH:$DOCKER_XAUTH:ro" \
     x11-apps
+
 🧪 How to Use
 Save this script as xlogoV2.sh.
+
 Make it executable:
 chmod +x xlogoV2.sh
 Run it:
 ./xlogoV2.sh
+
+
 🔍 Notes
 sed 's/^..../ffff/' replaces the hostname hash in the cookie with a wildcard (ffff) so the container hostname doesn't matter.
 No need to -h $(hostname) anymore.
