@@ -175,3 +175,42 @@ sed 's/^..../ffff/' replaces the hostname hash in the cookie with a wildcard (ff
 No need to -h $(hostname) anymore.
 Fully local, no external access is enabled.
 Still works fine with XWayland if $DISPLAY and .Xauthority are valid.
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+#!/bin/bash
+
+# Setup paths
+XAUTH=${XAUTHORITY:-$HOME/.Xauthority}
+DOCKER_XAUTH="${XAUTH}.docker"
+XSOCK="/tmp/.X11-unix"
+
+# Create a wildcarded .Xauthority file for container use
+cp --preserve=all "$XAUTH" "$DOCKER_XAUTH" || {
+    echo "[-] Failed to copy $XAUTH"
+    exit 1
+}
+
+xauth nlist "$DISPLAY" | sed -e 's/^..../ffff/' | xauth -f "$DOCKER_XAUTH" nmerge - || {
+    echo "[-] Failed to wildcard .Xauthority"
+    exit 1
+}
+
+# Run the container with X11 access
+docker run --rm \
+    -e DISPLAY="unix$DISPLAY" \
+    -v "$XSOCK:$XSOCK:ro" \
+    -e XAUTHORITY="$DOCKER_XAUTH" \
+    -v "$DOCKER_XAUTH:$DOCKER_XAUTH:ro" \
+    x11-apps
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
