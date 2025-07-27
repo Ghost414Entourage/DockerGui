@@ -1,0 +1,178 @@
+nano install-latest-docker.sh
+
+
+chmod +x install-latest-docker.sh
+
+
+./install-latest-docker.sh
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#!/bin/bash
+set -e
+
+# Directory to store .deb files
+WORKDIR=~/docker-debs
+mkdir -p "$WORKDIR"
+cd "$WORKDIR"
+
+# Base URL for noble stable pool
+BASE_URL="https://download.docker.com/linux/ubuntu/dists/noble/pool/stable/amd64/"
+
+# List of Docker package base names to fetch
+packages=(
+  "containerd.io"
+  "docker-ce"
+  "docker-ce-cli"
+  "docker-buildx-plugin"
+  "docker-compose-plugin"
+)
+
+echo "[+] Fetching latest .deb files from Docker repo..."
+
+for pkg in "${packages[@]}"; do
+  echo "  - $pkg"
+  # Scrape the latest version of the package
+  latest=$(curl -s "$BASE_URL" | grep -oP "${pkg}_.*?_amd64\.deb" | sort -V | tail -n 1)
+  echo "    -> $latest"
+
+  # Download if not already present
+  if [[ ! -f "$latest" ]]; then
+    wget -q "${BASE_URL}${latest}"
+  else
+    echo "    (Already downloaded)"
+  fi
+done
+
+echo "[+] Installing .deb packages..."
+sudo dpkg -i *.deb || sudo apt-get install -f -y
+
+echo "[+] Docker version:"
+docker --version
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+#!/bin/bash
+set -e
+
+WORKDIR=~/docker-debs
+mkdir -p "$WORKDIR"
+cd "$WORKDIR"
+
+BASE_URL="https://download.docker.com/linux/ubuntu/dists/noble/pool/stable/amd64/"
+
+packages=(
+  "containerd.io"
+  "docker-ce"
+  "docker-ce-cli"
+  "docker-buildx-plugin"
+  "docker-compose-plugin"
+)
+
+echo "[+] Fetching latest .deb files from Docker repo..."
+
+html=$(curl -s "$BASE_URL")
+
+for pkg in "${packages[@]}"; do
+  echo "  - $pkg"
+  # Extract all .deb entries for the package
+  matches=$(echo "$html" | grep -oP "${pkg}_[0-9][^\"']+?_amd64\.deb" | sort -V)
+  
+  if [[ -z "$matches" ]]; then
+    echo "    !! No matching .deb found for $pkg"
+    continue
+  fi
+
+  latest=$(echo "$matches" | tail -n 1)
+  echo "    -> $latest"
+
+  if [[ ! -f "$latest" ]]; then
+    wget -q "${BASE_URL}${latest}"
+    echo "    Downloaded $latest"
+  else
+    echo "    Already downloaded"
+  fi
+done
+
+echo "[+] Installing .deb packages..."
+sudo dpkg -i *.deb || sudo apt-get install -f -y
+
+echo "[+] Docker version:"
+docker --version
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+✅ Packages installed:
+
+containerd.io
+docker-ce
+docker-ce-cli
+docker-buildx-plugin
+docker-compose-plugin
+
+✅ Systemd services enabled:
+
+docker.service
+docker.socket
+containerd.service
+
+
+
+
+
+
+
+
