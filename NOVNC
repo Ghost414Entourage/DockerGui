@@ -217,6 +217,10 @@ EOF
 
 
 
+apt-get install -y dbus
+
+
+dbus-daemon --system --fork
 
 
 
