@@ -162,3 +162,66 @@ http://localhost:6080/vnc.html
 
 
 
+
+
+
+
+
+apt-get install -y --no-install-recommends \
+    pulseaudio \
+    pavucontrol \
+    ucspi-tcp \
+    gstreamer1.0-plugins-good \
+    gstreamer1.0-pulseaudio \
+    gstreamer1.0-tools
+
+
+
+
+
+
+apt-get update && apt-get install -y --no-install-recommends \
+    pulseaudio \
+    pavucontrol \
+    ucspi-tcp \
+    gstreamer1.0-plugins-good \
+    gstreamer1.0-pulseaudio \
+    gstreamer1.0-tools \
+    && rm -rf /var/lib/apt/lists/*
+
+
+
+
+
+
+
+
+
+
+mkdir -p pulse
+cat > pulse/default.pa << 'EOF'
+#!/usr/bin/pulseaudio -nF
+
+# Load modules for TCP and WebSocket support
+load-module module-native-protocol-unix auth-anonymous=1
+load-module module-native-protocol-tcp auth-anonymous=1
+load-module module-websocket-protocol port=8000 format=s16le
+
+# Load other standard modules
+load-module module-alsa-sink
+load-module module-alsa-source device=default
+load-module module-null-sink sink_name=virtual_sink
+EOF
+
+
+
+
+
+
+
+
+
+
+
+
+
