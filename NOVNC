@@ -103,11 +103,6 @@ apt-get install -y dbus-x11
 
 
 
-./utils/novnc_proxy --vnc localhost:5900 --listen 6080
-
-
-
-
 
 
 
@@ -117,7 +112,7 @@ Xvfb :1 -screen 0 1024x768x16 &
 export DISPLAY=:1
 xfce4-session &
 x11vnc -display :1 -nopw -forever -shared &
-/opt/noVNC/utils/novnc_proxy --vnc localhost:5900 --listen 6080
+
 
 
 
@@ -153,6 +148,9 @@ rm -rf master.zip noVNC-master
 startxfce4 &
 
 
+./utils/novnc_proxy --vnc localhost:5900 --listen 6080
+
+/opt/noVNC/utils/novnc_proxy --vnc localhost:5900 --listen 6080
 
 
 
