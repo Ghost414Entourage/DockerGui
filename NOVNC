@@ -65,3 +65,98 @@ startxfce4 &
 
 
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+docker run -d --name novnc-debian -p 5900:5900 -p 6080:6080 debian:bookworm-slim tail -f /dev/null
+
+
+
+
+
+docker exec -it novnc-debian bash
+
+
+
+
+
+
+apt-get update
+apt-get install -y apt-utils dialog dbus-x11 wget sudo gnupg2 \
+    xfce4 xfce4-goodies x11vnc xvfb \
+    python3 python3-websockify \
+    git
+
+
+
+apt-get update
+apt-get install -y dbus-x11
+
+
+
+
+
+
+
+
+
+./utils/novnc_proxy --vnc localhost:5900 --listen 6080
+
+
+
+
+
+
+
+
+
+Xvfb :1 -screen 0 1024x768x16 &
+export DISPLAY=:1
+xfce4-session &
+x11vnc -display :1 -nopw -forever -shared &
+/opt/noVNC/utils/novnc_proxy --vnc localhost:5900 --listen 6080
+
+
+
+
+
+
+
+
+apt-get install -y git
+cd /usr/share
+git clone https://github.com/novnc/noVNC.git
+cd noVNC
+./utils/novnc_proxy --vnc localhost:5900 --listen 6080
+
+
+
+cd /usr/share/novnc || mkdir -p /usr/share/novnc && cd /usr/share/novnc
+wget https://github.com/novnc/noVNC/archive/refs/heads/master.zip
+apt-get install -y unzip
+unzip master.zip
+mv noVNC-master/* .
+rm -rf master.zip noVNC-master
+
+
+
+
+
+
+
+
+
+
+startxfce4 &
+
+
+
+
+
+
+
+
+
