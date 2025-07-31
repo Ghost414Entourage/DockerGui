@@ -171,3 +171,215 @@ echo "All Docker containers, images, volumes, networks, and plugins have been re
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+
+
+
+
+#!/bin/bash
+
+# Define color codes
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+BLUE='\033[0;34m'
+MAGENTA='\033[0;35m'
+CYAN='\033[0;36m'
+RESET='\033[0m'  # Reset to default color
+
+# Function to display colored text
+print_header() {
+    echo -e "${CYAN}==============================================${RESET}"
+    echo -e "${CYAN}            DOCKER CLEANUP SCRIPT            ${RESET}"
+    echo -e "${CYAN}==============================================${RESET}"
+}
+
+# Function to print removal status
+print_status() {
+    echo -e "${GREEN}$1${RESET}"
+}
+
+# Start Cleanup Process
+print_header
+
+# Stop and remove all containers
+print_status "Stopping and removing all containers..."
+sudo docker container stop $(sudo docker container ls -aq) > /dev/null 2>&1
+sudo docker container rm $(sudo docker container ls -aq) > /dev/null 2>&1
+
+# Remove all images
+print_status "Removing all Docker images..."
+sudo docker image rm $(sudo docker image ls -aq) > /dev/null 2>&1
+
+# Remove all volumes
+print_status "Removing all Docker volumes..."
+sudo docker volume rm $(sudo docker volume ls -q) > /dev/null 2>&1
+
+# Remove all networks
+print_status "Removing all Docker networks..."
+sudo docker network rm $(sudo docker network ls -q) > /dev/null 2>&1
+
+# Remove all plugins
+print_status "Removing all Docker plugins..."
+sudo docker plugin disable $(sudo docker plugin ls -q) > /dev/null 2>&1
+sudo docker plugin rm $(sudo docker plugin ls -q) > /dev/null 2>&1
+
+# Perform Docker system prune
+print_status "Pruning Docker system..."
+sudo docker system prune -af > /dev/null 2>&1
+
+# Verification after cleanup
+print_status "${MAGENTA}Verification after cleanup:${RESET}"
+
+# List containers
+print_status "Containers:"
+sudo docker ps --all
+
+# List images
+print_status "Images:"
+sudo docker images
+
+# List volumes
+print_status "Volumes:"
+sudo docker volume ls
+
+# List networks
+print_status "Networks:"
+sudo docker network ls
+
+# List plugins
+print_status "Plugins:"
+sudo docker plugin ls
+
+# System prune result
+print_status "System Prune Result:"
+sudo docker system prune -af
+
+print_status "${GREEN}All Docker containers, images, volumes, networks, and plugins have been removed.${RESET}"
+
+# Celebration emoji
+echo -e "${CYAN}🎉🎉🎉 Cleanup completed successfully! 🎉🎉🎉${RESET}"
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+#!/bin/bash
+
+# Define color codes
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+BLUE='\033[0;34m'
+MAGENTA='\033[0;35m'
+CYAN='\033[0;36m'
+RESET='\033[0m'  # Reset to default color
+
+# Function to display colored text
+print_header() {
+    echo -e "${CYAN}==============================================${RESET}"
+    echo -e "${CYAN}            DOCKER CLEANUP SCRIPT            ${RESET}"
+    echo -e "${CYAN}==============================================${RESET}"
+}
+
+# Function to print status with a spinner
+spinner() {
+    local pid=$!
+    local spinstr='|/-\\'
+    while kill -0 $pid 2>/dev/null; do
+        local temp=${spinstr#?}
+        printf " [%c]  " "$spinstr"
+        spinstr=$temp${spinstr%"$temp"}
+        sleep 0.1
+        printf "\r"
+    done
+    printf "    \r"  # Clear the spinner
+}
+
+# Function to print removal status with spinner
+print_status() {
+    echo -e "${GREEN}$1${RESET}"
+}
+
+# Start Cleanup Process
+print_header
+
+# Stop and remove all containers with spinner
+print_status "Stopping and removing all containers..."
+sudo docker container stop $(sudo docker container ls -aq) > /dev/null 2>&1 &
+spinner
+sudo docker container rm $(sudo docker container ls -aq) > /dev/null 2>&1 &
+spinner
+
+# Remove all images with spinner
+print_status "Removing all Docker images..."
+sudo docker image rm $(sudo docker image ls -aq) > /dev/null 2>&1 &
+spinner
+
+# Remove all volumes with spinner
+print_status "Removing all Docker volumes..."
+sudo docker volume rm $(sudo docker volume ls -q) > /dev/null 2>&1 &
+spinner
+
+# Remove all networks with spinner
+print_status "Removing all Docker networks..."
+sudo docker network rm $(sudo docker network ls -q) > /dev/null 2>&1 &
+spinner
+
+# Remove all plugins with spinner
+print_status "Removing all Docker plugins..."
+sudo docker plugin disable $(sudo docker plugin ls -q) > /dev/null 2>&1 &
+spinner
+sudo docker plugin rm $(sudo docker plugin ls -q) > /dev/null 2>&1 &
+spinner
+
+# Perform Docker system prune with spinner
+print_status "Pruning Docker system..."
+sudo docker system prune -af > /dev/null 2>&1 &
+spinner
+
+# Verification after cleanup
+print_status "${MAGENTA}Verification after cleanup:${RESET}"
+
+# List containers
+print_status "Containers:"
+sudo docker ps --all
+
+# List images
+print_status "Images:"
+sudo docker images
+
+# List volumes
+print_status "Volumes:"
+sudo docker volume ls
+
+# List networks
+print_status "Networks:"
+sudo docker network ls
+
+# List plugins
+print_status "Plugins:"
+sudo docker plugin ls
+
+# System prune result
+print_status "System Prune Result:"
+sudo docker system prune -af
+
+print_status "${GREEN}All Docker containers, images, volumes, networks, and plugins have been removed.${RESET}"
+
+# Celebration emoji
+echo -e "${CYAN}🎉🎉🎉 Cleanup completed successfully! 🎉🎉🎉${RESET}"
+
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
