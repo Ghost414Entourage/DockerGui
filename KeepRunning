@@ -1,0 +1,10 @@
+docker run -d your-image tail -f /dev/null
+
+
+
+docker run -d ubuntu sleep infinity
+
+
+
+
+tail -f /dev/zero
