@@ -81,3 +81,85 @@ chmod +x xephyr.sh
 
 
 
+
+
+
+mkdir -p ~/docker-gui/bin
+cd ~/docker-gui/bin
+
+
+
+
+
+
+nano docker-xauth.sh
+
+
+
+
+
+
+
+
+
+#!/bin/bash
+
+DOCKER_XAUTHORITY=/tmp/.docker.xauth
+
+if [ ! -f $DOCKER_XAUTHORITY ]; then
+    touch $DOCKER_XAUTHORITY
+    xauth nlist $DISPLAY | sed -e 's/^..../ffff/' | xauth -f $DOCKER_XAUTHORITY nmerge -
+fi
+
+X11_FLAGS_RW="-e DISPLAY=$DISPLAY -v $DOCKER_XAUTHORITY:/root/.Xauthority:rw -v /tmp/.X11-unix:/tmp/.X11-unix:rw"
+
+
+
+
+
+
+chmod +x docker-xauth.sh
+
+
+
+
+
+
+
+
+
+nano docker-command.sh
+
+
+
+#!/bin/bash
+
+DOCKER_COMMAND="docker"
+
+
+
+
+
+chmod +x docker-command.sh
+
+
+
+
+
+
+cd ~/docker-gui/9-virtual-desktops/Xephyr
+
+
+
+./xephyr.sh
+
+
+
+
+
+
+
+
+
+
+
