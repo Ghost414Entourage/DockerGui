@@ -227,6 +227,10 @@ RUN \
 
 
 
+docker build -t debian-lxde:bullseye .
+
+
+
 
 
 
