@@ -19,7 +19,64 @@ ENTRYPOINT ["Xephyr"]
 
 
 
+
+
+
+
+
 docker build -t xephyr .
+
+
+
+
+
+
+
+cd ~/docker-gui/9-virtual-desktops/Xephyr
+
+
+
+
+
+nano xephyr.sh
+
+
+
+
+
+
+#!/bin/bash
+
+# The X11 DISPLAY number of the nested Xephyr X server.
+# Accepts user input value or defaults to :1
+NESTED_DISPLAY=${@:-:1}
+
+# Adjust BIN to point to the helper script directory
+BIN=$(cd $(dirname $0); echo ${PWD%docker-gui*})docker-gui/bin
+
+# Source X11 and Docker helper logic
+. $BIN/docker-xauth.sh
+. $BIN/docker-command.sh
+
+# Run the Xephyr container
+$DOCKER_COMMAND run --rm \
+    --ipc=host \
+    -u $(id -u):$(id -g) \
+    -v /etc/passwd:/etc/passwd:ro \
+    $X11_FLAGS_RW \
+    xephyr $NESTED_DISPLAY -resizeable -ac -reset -terminate 2> /dev/null
+
+
+
+
+
+
+
+
+
+chmod +x xephyr.sh
+
+
 
 
 
