@@ -1,0 +1,26 @@
+mkdir -p ~/docker-gui/9-virtual-desktops/Xephyr
+cd ~/docker-gui/9-virtual-desktops/Xephyr
+
+
+
+nano Dockerfile
+
+
+
+
+FROM ubuntu:18.04
+
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive \
+    apt-get install -y --no-install-recommends \
+    xserver-xephyr && \
+    rm -rf /var/lib/apt/lists/*
+
+ENTRYPOINT ["Xephyr"]
+
+
+
+docker build -t xephyr .
+
+
+
+
