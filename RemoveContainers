@@ -130,3 +130,44 @@ chmod +x docker_cleanup.sh
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+
+#!/bin/bash
+
+# Stop all running containers
+echo "Stopping all containers..."
+sudo docker stop $(sudo docker ps -aq)
+
+# Remove all containers
+echo "Removing all containers..."
+sudo docker rm -f $(sudo docker ps -aq)
+
+# Remove all images
+echo "Removing all images..."
+sudo docker rmi -f $(sudo docker images -aq)
+
+# Remove all volumes
+echo "Removing all volumes..."
+sudo docker volume rm $(sudo docker volume ls -q)
+
+# Remove all networks (excluding default ones: bridge, host, none)
+echo "Removing all networks..."
+sudo docker network rm $(sudo docker network ls -q)
+
+# Prune unused volumes (optional step, but can clean up unused ones)
+echo "Pruning unused volumes..."
+sudo docker volume prune -f
+
+# Remove all plugins
+echo "Removing all plugins..."
+sudo docker plugin list -q | xargs -I {} sudo docker plugin rm -f {}
+
+# Prune system resources
+echo "Pruning system..."
+sudo docker system prune -a -f --volumes
+
+echo "All Docker containers, images, volumes, networks, and plugins have been removed."
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
