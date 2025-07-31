@@ -12,3 +12,121 @@ docker rm $(docker ps -qa)
 
 
 To avoid creating unnecessary garbage in the first place it is also possible to automatically remove the container when it exits by using docker run with the --rm option e.g.
+
+
+
+
+
+
+
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+nano docker_cleanup.sh
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#!/bin/bash
+
+# Remove all containers (running and stopped)
+echo "Removing all containers..."
+sudo docker rm -f $(sudo docker ps -aq)
+
+# Remove all images
+echo "Removing all images..."
+sudo docker rmi -f $(sudo docker images -q)
+
+# Remove all volumes
+echo "Removing all volumes..."
+sudo docker volume rm $(sudo docker volume ls -q)
+
+# Remove all networks (except default)
+echo "Removing all networks..."
+sudo docker network rm $(sudo docker network ls -q)
+
+# Remove all unused resources (containers, images, volumes, and networks)
+echo "Pruning unused resources..."
+sudo docker system prune -a --volumes -f
+
+# Remove all dangling images
+echo "Removing dangling images..."
+sudo docker image prune -f
+
+# Clean build cache
+echo "Cleaning build cache..."
+sudo docker builder prune -f
+
+# Force remove containers and images
+echo "Force removing all containers and images..."
+sudo docker rm -f $(sudo docker ps -aq) && sudo docker rmi -f $(sudo docker images -q)
+
+# Remove all containers, volumes, images, and networks in one go
+echo "Removing all containers, volumes, images, and networks in one go..."
+sudo docker rm -f $(sudo docker ps -aq)
+sudo docker rmi -f $(sudo docker images -q)
+sudo docker volume rm $(sudo docker volume ls -q)
+sudo docker network rm $(sudo docker network ls -q)
+
+# EXTREME: Remove Docker data directory (Be careful with this one)
+# echo "Removing Docker data directory (EXTREME)..."
+# sudo rm -rf /var/lib/docker
+
+# Verification: Check if any containers are left
+echo "Checking if any containers are left..."
+sudo docker ps -a
+
+# Verification: Check if any images are left
+echo "Checking if any images are left..."
+sudo docker images
+
+# Verification: Check if any volumes are left
+echo "Checking if any volumes are left..."
+sudo docker volume ls
+
+# Verification: Check if any networks are left
+echo "Checking if any networks are left..."
+sudo docker network ls
+
+echo "Docker cleanup completed!"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+chmod +x docker_cleanup.sh
+
+
+
+./docker_cleanup.sh
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
