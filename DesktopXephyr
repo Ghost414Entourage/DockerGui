@@ -277,22 +277,37 @@ nano ~/docker-gui/9-virtual-desktops/debian-buster-lxde/make-credentials.sh
 #!/bin/bash
 set -e
 
-# Variables
-DOCKER_COMMAND=$(realpath ../../bin/docker-command.sh)
 IMAGE=debian-lxde:buster
+CONTAINER=debian-lxde-setup
 
-# Create initial /etc/passwd /etc/shadow /etc/group
-if ! test -f "etc.tar.gz"; then
-  echo "Creating /etc/passwd /etc/shadow and /etc/group for container."
+echo "Creating /etc/passwd /etc/shadow and /etc/group for container."
 
-  $DOCKER_COMMAND run --rm -it \
-    -v $PWD:/mnt \
-    $IMAGE sh -c 'adduser --uid '"$(id -u)"' --disabled-password --gecos "" '"$(id -un)"' && \
-                 usermod -aG sudo '"$(id -un)"' && \
-                 tar zcf /mnt/etc.tar.gz -C / ./etc/passwd ./etc/shadow ./etc/group'
-else
-  echo "etc.tar.gz already exists, skipping."
-fi
+docker rm -f $CONTAINER 2>/dev/null || true
+
+docker run -d --name $CONTAINER $IMAGE sleep 5
+
+docker exec $CONTAINER adduser --disabled-password --gecos "" user
+
+mkdir -p root
+
+docker cp $CONTAINER:/etc/passwd root/passwd
+docker cp $CONTAINER:/etc/shadow root/shadow
+docker cp $CONTAINER:/etc/group  root/group
+
+tar -C root -czf etc.tar.gz passwd shadow group
+
+docker rm -f $CONTAINER
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -301,6 +316,75 @@ chmod +x make-credentials.sh
 
 
 ./make-credentials.sh
+
+
+
+
+
+
+
+
+
+
+mkdir -p ~/$(id -un)
+
+
+
+
+
+nano ~/docker-gui/9-virtual-desktops/debian-buster-lxde/launch.sh
+
+
+
+
+#!/bin/bash
+
+set -e
+
+DOCKER_COMMAND=docker
+IMAGE=debian-lxde:buster
+CONTAINER=debian-lxde
+
+# Create home directory if not present
+mkdir -p $(id -un)
+
+# Launch container
+$DOCKER_COMMAND run --rm -d \
+  --device=/dev/tty0 \
+  --name $CONTAINER \
+  --ipc=host \
+  --shm-size 2g \
+  --security-opt apparmor=unconfined \
+  --cap-add=SYS_ADMIN --cap-add=SYS_BOOT \
+  -v /sys/fs/cgroup:/sys/fs/cgroup \
+  -v $PWD/$(id -un):/home/$(id -un) \
+  -v $PWD/../bin/docker-xauth.sh:/usr/local/bin/docker-xauth.sh:ro \
+  -v $PWD/../bin/docker-command.sh:/usr/local/bin/docker-command.sh:ro \
+  -v $PWD/../../Xephyr/xephyr.sh:/usr/local/bin/xephyr.sh:ro \
+  -v $HOME/.Xauthority:/root/.Xauthority.docker:ro \
+  -v /tmp/.X11-unix/X0:/tmp/.X11-unix/X0:ro \
+  $IMAGE /sbin/init
+
+# Wait briefly to ensure the container is ready
+sleep 0.25
+
+# Copy credential files into the container
+cat etc.tar.gz | $DOCKER_COMMAND cp - $CONTAINER:/
+
+
+
+
+chmod +x ~/docker-gui/9-virtual-desktops/debian-buster-lxde/launch.sh
+
+
+
+./launch.sh
+
+
+
+
+
+
 
 
 
