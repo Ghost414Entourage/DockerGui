@@ -383,6 +383,7 @@ chmod +x ~/docker-gui/9-virtual-desktops/debian-buster-lxde/launch.sh
 
 
 
+./make-credentials.sh
 
 
 
