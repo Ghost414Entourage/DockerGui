@@ -268,6 +268,46 @@ docker build -t debian-lxde:buster .
 
 
 
+nano ~/docker-gui/9-virtual-desktops/debian-buster-lxde/make-credentials.sh
+
+
+
+
+
+#!/bin/bash
+set -e
+
+# Variables
+DOCKER_COMMAND=$(realpath ../../bin/docker-command.sh)
+IMAGE=debian-lxde:buster
+
+# Create initial /etc/passwd /etc/shadow /etc/group
+if ! test -f "etc.tar.gz"; then
+  echo "Creating /etc/passwd /etc/shadow and /etc/group for container."
+
+  $DOCKER_COMMAND run --rm -it \
+    -v $PWD:/mnt \
+    $IMAGE sh -c 'adduser --uid '"$(id -u)"' --disabled-password --gecos "" '"$(id -un)"' && \
+                 usermod -aG sudo '"$(id -un)"' && \
+                 tar zcf /mnt/etc.tar.gz -C / ./etc/passwd ./etc/shadow ./etc/group'
+else
+  echo "etc.tar.gz already exists, skipping."
+fi
+
+
+
+
+chmod +x make-credentials.sh
+
+
+./make-credentials.sh
+
+
+
+
+
+
+
 
 
 
