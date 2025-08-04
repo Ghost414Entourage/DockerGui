@@ -8,3 +8,18 @@ docker exec -it debian-desktop bash
 
 
 
+apt-get update
+apt-get -y upgrade
+
+
+
+apt-get install -y xfce4 xfce4-goodies
+
+
+apt-get install -y tightvncserver
+
+
+
+vncserver
+
+
