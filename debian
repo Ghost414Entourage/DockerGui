@@ -29,6 +29,28 @@ vncserver
 ls -la ~/.vnc
 
 
+
+
+
+
+
+
+
+
+
+
+
+docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' debian-desktop
+
+
+
+docker inspect <container_name_or_id> | grep -A 5 "NetworkSettings"
+
+
+
+
+
+
 cp ~/.vnc/xstartup ~/.vnc/xstartup.bak
 
 
