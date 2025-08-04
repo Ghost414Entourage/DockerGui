@@ -61,3 +61,81 @@ openssl req -new -x509 -days 365 -nodes -out self.pem -keyout self.pem
 
 
 
+vncserver -kill :1
+
+
+
+
+git clone https://github.com/novnc/noVNC.git /root/noVNC
+
+chmod +x /root/noVNC/utils/novnc_proxy
+
+
+git clone https://github.com/novnc/websockify /root/noVNC/utils/websockify
+
+
+
+apt update
+apt install -y dbus-x11
+
+
+which dbus-launch
+
+
+
+cat > ~/.vnc/xstartup << 'EOF'
+#!/bin/bash
+xrdb $HOME/.Xresources
+dbus-launch startxfce4 &
+EOF
+
+chmod +x ~/.vnc/xstartup
+
+
+vncserver -kill :1
+vncserver :1
+
+
+
+
+
+
+
+cat > /root/start-vnc-web.sh << 'EOF'
+#!/bin/bash
+
+set -e  # Exit on error
+
+# Print connection instructions
+echo "Connect with: https://172.17.0.2:8443/vnc.html?host=172.17.0.2&port=8443"
+
+# Start VNC server on :1
+vncserver :1
+
+# Start noVNC WebSocket proxy
+~/noVNC/utils/novnc_proxy --vnc localhost:5901 --listen 8443
+
+# Stop VNC server when done
+vncserver -kill :1
+EOF
+
+chmod +x /root/start-vnc-web.sh
+
+
+
+
+
+
+
+./start-vnc-web.sh
+
+
+https://172.17.0.2:8443/vnc.html?host=172.17.0.2&port=8443
+
+
+
+
+
+
+
+
