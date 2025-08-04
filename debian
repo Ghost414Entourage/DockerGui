@@ -29,6 +29,9 @@ vncserver
 ls -la ~/.vnc
 
 
+cp ~/.vnc/xstartup ~/.vnc/xstartup.bak
+
+
 
 
 
