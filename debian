@@ -1,0 +1,4 @@
+docker run -d --name debian-desktop   -p 5900:5900   -p 5901:5901   -p 6080:6080   -p 6081:6081   -p 6923:6923   -p 8080:8080 -p 8443:8443   -p 14500:14500   debian:bookworm tail -f /dev/null
+
+
+
