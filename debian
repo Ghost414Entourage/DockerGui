@@ -19,11 +19,15 @@ apt-get install -y xfce4 xfce4-goodies
 apt-get install -y tightvncserver
 
 
-ENV USER=root
+
 
 
 export USER=root
 vncserver
+
+
+ls -la ~/.vnc
+
 
 
 
