@@ -45,5 +45,13 @@ chmod +x ~/.vnc/xstartup
 
 
 
+apt install git
+
+
+
+cd ~/
+git clone https://github.com/novnc/noVNC.git
+
+
 
 
