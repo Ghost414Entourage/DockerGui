@@ -38,19 +38,6 @@ ls -la ~/.vnc
 
 
 
-
-
-docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' debian-desktop
-
-
-
-docker inspect <container_name_or_id> | grep -A 5 "NetworkSettings"
-
-
-
-
-
-
 cp ~/.vnc/xstartup ~/.vnc/xstartup.bak
 
 
@@ -153,6 +140,19 @@ chmod +x /root/start-vnc-web.sh
 
 
 https://172.17.0.2:8443/vnc.html?host=172.17.0.2&port=8443
+
+
+
+
+
+
+
+
+docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' debian-desktop
+
+
+
+docker inspect <container_name_or_id> | grep -A 5 "NetworkSettings"
 
 
 
