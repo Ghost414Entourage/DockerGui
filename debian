@@ -34,6 +34,16 @@ cp ~/.vnc/xstartup ~/.vnc/xstartup.bak
 
 
 
+cat > ~/.vnc/xstartup << 'EOF'
+#!/bin/bash
+xrdb $HOME/Xresources
+startxfce4 &
+EOF
+
+chmod +x ~/.vnc/xstartup
+
+
+
 
 
 
