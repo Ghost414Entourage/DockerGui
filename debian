@@ -20,6 +20,8 @@ apt-get install -y tightvncserver
 
 
 
+export USER=root
 vncserver
+
 
 
