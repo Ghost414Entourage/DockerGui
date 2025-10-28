@@ -182,3 +182,6 @@ EOF
 docker compose up -d
 
 
+
+ nc -zv -G 12 34.23.187.94 3000 3001
+
