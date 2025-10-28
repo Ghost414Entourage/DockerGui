@@ -1,0 +1,184 @@
+docker stop $(docker ps -aq) 2>/dev/null; \
+docker rm -f $(docker ps -aq) 2>/dev/null; \
+docker rmi -f $(docker images -q) 2>/dev/null; \
+docker network prune -f; \
+docker volume prune -f; \
+docker builder prune -af; \
+docker compose pull && docker compose up -d
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+cat <<'EOF' > docker-compose.yml
+version: "3.8"
+services:
+  webtop:
+    image: lscr.io/linuxserver/webtop:latest
+    container_name: webtop
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+      - CUSTOM_USER=admin
+      - PASSWORD=changeme123   # change this password!
+    volumes:
+      - /opt/webtop/config:/config
+    ports:
+      - "3000:3000"   # HTTP
+      - "3001:3001"   # HTTPS
+    shm_size: "1gb"
+    restart: unless-stopped
+EOF
+
+
+
+
+docker compose up -d
+
+
+docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' webtop
+
+docker ps -q | xargs -n1 docker inspect -f '{{.Name}} - {{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}'
+
+docker network ls
+
+
+http://<your-VM-external-IP>:3000
+
+https://<your-VM-external-IP>:3001
+
+docker port webtop
+
+docker exec -it webtop bash
+
+cat /etc/passwd | grep admin
+
+adduser admin
+
+usermod -aG sudo admin
+
+docker restart webtop
+
+id admin
+
+
+
+
+
+cat <<'EOF' > ~/docker-compose.yml
+services:
+  webtop:
+    image: lscr.io/linuxserver/webtop:latest
+    container_name: webtop
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+      - CUSTOM_USER=admin
+      - PASSWORD=changeme123
+    volumes:
+      - /opt/webtop/config:/config
+    ports:
+      - "3000:3000"
+      - "3001:3001"
+    shm_size: "1gb"
+    restart: unless-stopped
+EOF
+
+
+
+docker exec -it webtop env | grep AUTH
+docker exec -it webtop env | grep USER
+
+
+
+
+
+
+services:
+  webtop:
+    image: lscr.io/linuxserver/webtop:ubuntu-xfce
+    container_name: webtop
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+      - CUSTOM_USER=admin
+      - PASSWORD=changeme123
+    volumes:
+      - /opt/webtop/config:/config
+    ports:
+      - "3000:3000"
+      - "3001:3001"
+    shm_size: "1gb"
+    restart: unless-stopped
+
+
+
+
+
+
+
+services:
+  kasm:
+    image: lscr.io/linuxserver/kasm:latest
+    container_name: kasm
+    privileged: true
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+      - KASM_PORT=443
+      # Optional: enable Docker Hub credentials for private workspace images
+      # - DOCKER_HUB_USERNAME=your_dockerhub_username
+      # - DOCKER_HUB_PASSWORD=your_dockerhub_password
+      # Optional network tuning
+      # - DOCKER_MTU=1500
+    volumes:
+      - /opt/kasm/data:/opt
+      - /opt/kasm/profiles:/profiles  # optional: persistent user profiles
+      # Optional hardware input passthrough (only needed if you plan to use device input)
+      # - /dev/input:/dev/input
+      # - /run/udev/data:/run/udev/data
+    ports:
+      - "3000:3000"
+      - "443:443"
+    restart: unless-stopped
+
+
+
+
+
+sudo mkdir -p /opt/kasm/data /opt/kasm/profiles
+sudo chmod -R 777 /opt/kasm
+
+
+cat <<'EOF' > "$(pwd)/docker-compose.yml"
+services:
+  kasm:
+    image: lscr.io/linuxserver/kasm:latest
+    container_name: kasm
+    privileged: true
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+      - KASM_PORT=443
+      - CUSTOM_USER=admin
+      - PASSWORD=changeme123
+    volumes:
+      - /opt/kasm/data:/opt
+      - /opt/kasm/profiles:/profiles
+    ports:
+      - "3000:3000"
+      - "443:443"
+    restart: unless-stopped
+EOF
+
+
+
+docker compose up -d
+
+
