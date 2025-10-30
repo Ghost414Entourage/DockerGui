@@ -1,0 +1,6 @@
+docker volume create my_volume
+
+docker volume ls
+
+docker volume inspect my_volume
+
