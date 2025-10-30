@@ -16,3 +16,6 @@ docker network create mynet
 
 docker network inspect mynet
 
+docker network rm mynet
+
+docker network create --subnet=192.168.50.0/24 --gateway=192.168.50.1 mynet
